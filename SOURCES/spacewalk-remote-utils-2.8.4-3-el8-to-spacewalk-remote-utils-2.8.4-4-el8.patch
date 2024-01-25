@@ -1,0 +1,40 @@
+diff --git a/spacewalk-remote-utils.spec b/spacewalk-remote-utils.spec
+index 7872e72..d096f61 100644
+--- a/spacewalk-remote-utils.spec
++++ b/spacewalk-remote-utils.spec
+@@ -4,7 +4,7 @@
+ 
+ Name:        spacewalk-remote-utils
+ Version:     2.8.4
+-Release:     3%{?dist}
++Release:     4%{?dist}
+ Summary:     Utilities to interact with a Red Hat Satellite or Spacewalk server remotely.
+ 
+ License:     GPLv2
+@@ -12,12 +12,14 @@ URL:         https://github.com/spacewalkproject/spacewalk
+ Source:      https://github.com/spacewalkproject/spacewalk/archive/%{name}-%{version}.tar.gz
+ BuildArch:   noarch
+ 
+-%if 0%{?build_py}
++%if 0%{?build_py3}
+ BuildRequires: python3-devel
+ Requires: python3-rhnlib
++Requires: python3-pygpgme
+ %else
+ BuildRequires: python-devel
+ Requires: rhnlib >= 2.8.4
++Requires: pygpgme
+ %if 0%{?suse_version}
+ # provide directories for filelist check in OBS
+ BuildRequires: rhn-client-tools
+@@ -62,6 +64,10 @@ docbook2man ./spacewalk-create-channel/doc/spacewalk-create-channel.sgml -o ./sp
+ %doc %{_mandir}/man1/spacewalk-create-channel.1.gz
+ 
+ %changelog
++* Mon May 14 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.4-4
++- Related: #1577219 - explicitly require pygpgme (tkasparek@redhat.com)
++- Resolves: #1577219 - fix build macro for python3 (tkasparek@redhat.com)
++
+ * Wed Mar 14 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.4-3
+ - build spacewalk-remote-utils for python3 (tkasparek@redhat.com)
+ 

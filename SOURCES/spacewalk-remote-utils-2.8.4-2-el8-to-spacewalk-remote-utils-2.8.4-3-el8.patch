@@ -1,0 +1,27 @@
+diff --git a/spacewalk-remote-utils.spec b/spacewalk-remote-utils.spec
+index dd84f73..7872e72 100644
+--- a/spacewalk-remote-utils.spec
++++ b/spacewalk-remote-utils.spec
+@@ -1,10 +1,10 @@
+-%if 0%{?fedora}
++%if 0%{?fedora} || 0%{?rhel} >= 8
+ %global build_py3   1
+ %endif
+ 
+ Name:        spacewalk-remote-utils
+ Version:     2.8.4
+-Release:     2%{?dist}
++Release:     3%{?dist}
+ Summary:     Utilities to interact with a Red Hat Satellite or Spacewalk server remotely.
+ 
+ License:     GPLv2
+@@ -62,6 +62,9 @@ docbook2man ./spacewalk-create-channel/doc/spacewalk-create-channel.sgml -o ./sp
+ %doc %{_mandir}/man1/spacewalk-create-channel.1.gz
+ 
+ %changelog
++* Wed Mar 14 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.4-3
++- build spacewalk-remote-utils for python3 (tkasparek@redhat.com)
++
+ * Mon Mar 05 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.4-2
+ - rebuild for rhel8
+ 

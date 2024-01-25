@@ -1,0 +1,78 @@
+diff --git a/spacewalk-add-providers/spacewalk-add-providers b/spacewalk-add-providers/spacewalk-add-providers
+index 2bad499..c925d7f 100755
+--- a/spacewalk-add-providers/spacewalk-add-providers
++++ b/spacewalk-add-providers/spacewalk-add-providers
+@@ -4,14 +4,20 @@
+ #
+ 
+ from optparse import Option, OptionParser
++from socket import gethostname
+ import logging, os, shutil, sys, tempfile
+ 
+ if sys.version_info[0] == 3:
+     import xmlrpc.client as xmlrpclib
+ else:
+     import xmlrpclib
+-import gpgme
+-from socket import gethostname
++
++try:
++    import gpg
++    has_gpgme = False
++except ImportError:
++    import gpgme
++    has_gpgme = True
+ 
+ opts = [ Option('-u', '--username'),
+          Option('-p', '--password'),
+@@ -71,9 +77,12 @@ for key_file in args:
+ 
+     # read the key's provider and ID
+     try:
+-        ctx = gpgme.Context()
+-
+-        result = ctx.import_(open(key_file, 'rb'))
++        if has_gpgme:
++            ctx = gpgme.Context()
++            result = ctx.import_(open(key_file, 'rb'))
++        else:
++            ctx = gpg.Context()
++            result = ctx.op_import(open(key_file, 'rb'))
+ 
+         for key in ctx.keylist():
+             provider_name = key.uids[0].name
+diff --git a/spacewalk-remote-utils.spec b/spacewalk-remote-utils.spec
+index d096f61..017b022 100644
+--- a/spacewalk-remote-utils.spec
++++ b/spacewalk-remote-utils.spec
+@@ -4,7 +4,7 @@
+ 
+ Name:        spacewalk-remote-utils
+ Version:     2.8.4
+-Release:     4%{?dist}
++Release:     5%{?dist}
+ Summary:     Utilities to interact with a Red Hat Satellite or Spacewalk server remotely.
+ 
+ License:     GPLv2
+@@ -15,7 +15,7 @@ BuildArch:   noarch
+ %if 0%{?build_py3}
+ BuildRequires: python3-devel
+ Requires: python3-rhnlib
+-Requires: python3-pygpgme
++Requires: python3-gpg
+ %else
+ BuildRequires: python-devel
+ Requires: rhnlib >= 2.8.4
+@@ -64,6 +64,12 @@ docbook2man ./spacewalk-create-channel/doc/spacewalk-create-channel.sgml -o ./sp
+ %doc %{_mandir}/man1/spacewalk-create-channel.1.gz
+ 
+ %changelog
++* Tue Nov 06 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.4-5
++- Related: #1633532 - require python-gpg instead of python-gpgme where possible
++  (tkasparek@redhat.com)
++- Resolves: #1633532 - use python-gpg instead of python-gpgme where possible
++  (tkasparek@redhat.com)
++
+ * Mon May 14 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.4-4
+ - Related: #1577219 - explicitly require pygpgme (tkasparek@redhat.com)
+ - Resolves: #1577219 - fix build macro for python3 (tkasparek@redhat.com)

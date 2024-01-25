@@ -1,0 +1,23 @@
+diff --git a/spacewalk-remote-utils.spec b/spacewalk-remote-utils.spec
+index 8213ffc..dd84f73 100644
+--- a/spacewalk-remote-utils.spec
++++ b/spacewalk-remote-utils.spec
+@@ -4,7 +4,7 @@
+ 
+ Name:        spacewalk-remote-utils
+ Version:     2.8.4
+-Release:     1%{?dist}
++Release:     2%{?dist}
+ Summary:     Utilities to interact with a Red Hat Satellite or Spacewalk server remotely.
+ 
+ License:     GPLv2
+@@ -62,6 +62,9 @@ docbook2man ./spacewalk-create-channel/doc/spacewalk-create-channel.sgml -o ./sp
+ %doc %{_mandir}/man1/spacewalk-create-channel.1.gz
+ 
+ %changelog
++* Mon Mar 05 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.4-2
++- rebuild for rhel8
++
+ * Fri Feb 09 2018 Michael Mraka <michael.mraka@redhat.com> 2.8.4-1
+ - removed Group from specfile
+ 
